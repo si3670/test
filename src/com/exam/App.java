@@ -66,7 +66,7 @@ private ArrayList<Member> members;
 
 			sc.close();
 
-			System.out.println("프로그램 끝");
+			System.out.println("프로그램 끄으읕");
 
 		}
 
