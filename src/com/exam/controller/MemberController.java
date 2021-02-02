@@ -1,5 +1,6 @@
 package com.exam.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,21 +12,56 @@ public class MemberController extends Controller {
 	private List<Member> members;
 	private String command;
 	private String actinMethodName;
+	private Member loginedMember;
 
-	public MemberController(Scanner sc, List<Member> members) {
+	public MemberController(Scanner sc) {
 		this.sc = sc;
-		this.members = members;
+
+		members = new ArrayList<Member>();
 	}
 
 	public void doAction(String command, String actionMethodName) {
 		this.command = command;
 		this.actinMethodName = actinMethodName;
-		
+
 		switch (actionMethodName) {
 		case "join":
 			doJoin();
 			break;
+		case "login":
+			doLogin();
+			break;
 		}
+	}
+
+	private void doLogin() {
+		System.out.println("======로그인======");
+
+		System.out.printf("아이디 :");
+		String loginId = sc.nextLine();
+		System.out.printf("비밀번호 :");
+		String loginPw = sc.nextLine();
+		
+		Member member = getMemberByLoginId(loginId);
+		if(member == null) {
+			System.out.println("존재하지 않는 회원입니다.");
+			return;
+		}
+		if(member.loginPw.equals(loginPw)==false){
+			System.out.println("비밀번호를 확인해주세요.");
+			return;
+		}
+		loginedMember = member;
+		System.out.printf("%s 환영합니다.\n", loginedMember.name);
+	}
+
+	private Member getMemberByLoginId(String loginId) {
+		int index = getMemberIndexByLoginId(loginId);
+		
+		if(index == -1) {
+			return null;
+		}
+		return members.get(index);
 	}
 
 	private boolean isJoinableLoginId(String loginId) {
@@ -48,7 +84,7 @@ public class MemberController extends Controller {
 		return -1;
 	}
 
-	public void doJoin() {
+	private void doJoin() {
 		System.out.println("======회원가입======");
 		int id = members.size() + 1; // write안에 들어있는 게시글 갯수 +1
 		String regDate = Util.getNowDateStr();
